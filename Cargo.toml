@@ -1,0 +1,10 @@
+[package]
+name = "gba-types"
+description = "Structs for GBA MMIO."
+repository = "https://github.com/rust-console/gba-types"
+version = "0.1.0"
+authors = ["Lokathor <zefria@gmail.com>"]
+edition = "2018"
+license = "Zlib OR Apache-2.0 OR MIT"
+
+[dependencies]
