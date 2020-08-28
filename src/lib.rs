@@ -92,7 +92,7 @@ macro_rules! phantom_field {
   };
 }
 
-macro_rules! register_newtype {
+macro_rules! bitstruct_newtype {
   ($(#[$ty_attrs:meta])* $name:ident($inner:ty) {
     $($(#[$field_attrs:meta])* [$($field_tokens:tt)*],)+
     $(,)*
@@ -125,7 +125,7 @@ const_enum! {
   }
 }
 
-register_newtype! {
+bitstruct_newtype! {
   DisplayControlSetting(u16) {
     [0-2 => VideoMode: video_mode, set_video_mode],
     [4: show_frame1, set_show_frame1],
@@ -143,7 +143,7 @@ register_newtype! {
   }
 }
 
-register_newtype! {
+bitstruct_newtype! {
   DisplayStatusSetting(u16) {
     [0: is_vblank, set_is_vblank],
     [1: is_hblank, set_is_hblank],
@@ -155,7 +155,7 @@ register_newtype! {
   }
 }
 
-register_newtype! {
+bitstruct_newtype! {
   BackgroundControlSetting(u16) {
     /// lower priority draws "closer" to the top. in case of tie, go by the bg#
     [0-1: background_priority, set_background_priority],
@@ -168,7 +168,7 @@ register_newtype! {
   }
 }
 
-register_newtype! {
+bitstruct_newtype! {
   WindowContentSetting(u8) {
     [0: display_bg0, set_display_bg0],
     [1: display_bg1, set_display_bg1],
@@ -179,7 +179,7 @@ register_newtype! {
   }
 }
 
-register_newtype! {
+bitstruct_newtype! {
   MosaicSetting(u8) {
     [0-3: horizontal_size, set_horizontal_size],
     [4-7: vertical_size, set_vertical_size],
@@ -195,7 +195,7 @@ const_enum! {
   }
 }
 
-register_newtype! {
+bitstruct_newtype! {
   ColorBlendControlSetting(u16) {
     [0: first_target_bg0, set_first_target_bg0],
     [1: first_target_bg1, set_first_target_bg1],
@@ -213,7 +213,7 @@ register_newtype! {
   }
 }
 
-register_newtype! {
+bitstruct_newtype! {
   TextScreenEntry(u16) {
     [0-9: tile_id, set_tile_id],
     [10: horizontal_flip, set_horizontal_flip],
@@ -222,7 +222,7 @@ register_newtype! {
   }
 }
 
-register_newtype! {
+bitstruct_newtype! {
   Color(u16) {
     [0-4: red, set_red],
     [5-9: green, set_green],
@@ -239,7 +239,7 @@ const_enum! {
   }
 }
 
-register_newtype! {
+bitstruct_newtype! {
   ObjAttr0(u16) {
     [0-7: y_coordinate, set_y_coordinate],
     [8-9 => ObjDisplayMode: obj_display_mode, set_obj_display_mode],
@@ -250,7 +250,7 @@ register_newtype! {
   }
 }
 
-register_newtype! {
+bitstruct_newtype! {
   ObjAttr1(u16) {
     [0-8: x_coordinate, set_x_coordinate],
     [9-13: affine_param, set_affine_param],
@@ -260,7 +260,7 @@ register_newtype! {
   }
 }
 
-register_newtype! {
+bitstruct_newtype! {
   ObjAttr2(u16) {
     [0-9: base_tile_id, set_base_tile_id],
     [10-11: priority, set_priority],
