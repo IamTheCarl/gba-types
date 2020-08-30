@@ -25,7 +25,10 @@ macro_rules! bit_set {
 /// This is far more FFI safe than a rust `enum` type.
 macro_rules! const_enum {
   ($(#[$ty_attrs:meta])* $name:ident($inner:ty) {
-    $($(#[$const_attrs:meta])* $c:ident($v:expr)),+ $(,)*
+    $(
+      $(#[$const_attrs:meta])*
+      $c:ident($v:expr)
+    ),+ $(,)?
   }) => {
     $(#[$ty_attrs])*
     #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -38,16 +41,10 @@ macro_rules! const_enum {
   }
 }
 
-macro_rules! phantom_field {
+macro_rules! phantom_field_get {
   // bools
   ($(#[$field_attrs:meta])* $inner:ty, $bit:literal : $g:ident, $s:ident) => {
     $(#[$field_attrs])*
-    #[inline]
-    pub const fn $s(&mut self, $g: bool) {
-      *self =
-        Self(bit_set!(self.0, 1 << $bit, ($g as usize) << $bit) as $inner);
-    }
-    #[allow(missing_docs)]
     #[inline]
     #[must_use]
     pub const fn $g(self) -> bool {
@@ -57,12 +54,6 @@ macro_rules! phantom_field {
   // raw ints
   ($(#[$field_attrs:meta])* $inner:ty, $start:literal - $end:literal : $g:ident, $s:ident) => {
     $(#[$field_attrs])*
-    #[inline]
-    pub const fn $s(&mut self, $g: $inner) {
-      const MASK: $inner =
-        ((((1_u64 << ($end + 1)) - 1) >> $start) << $start) as $inner;
-      *self = Self(bit_set!(self.0, MASK, $g << $start) as $inner);
-    }
     #[allow(missing_docs)]
     #[inline]
     #[must_use]
@@ -75,12 +66,6 @@ macro_rules! phantom_field {
   // newtype'd ints
   ($(#[$field_attrs:meta])* $inner:ty, $start:literal - $end:literal => $nt:ident : $g:ident, $s:ident) => {
     $(#[$field_attrs])*
-    #[inline]
-    pub const fn $s(&mut self, $g: $nt) {
-      const MASK: $inner =
-        ((((1_u64 << ($end + 1)) - 1) >> $start) << $start) as $inner;
-      *self = Self(bit_set!(self.0, MASK, $g.0) as $inner);
-    }
     #[allow(missing_docs)]
     #[inline]
     #[must_use]
@@ -92,17 +77,52 @@ macro_rules! phantom_field {
   };
 }
 
+macro_rules! phantom_field_set {
+  // bools
+  ($inner:ty, $bit:literal : $g:ident, $s:ident) => {
+    #[allow(missing_docs)]
+    #[inline]
+    pub const fn $s(&mut self, $g: bool) {
+      *self =
+        Self(bit_set!(self.0, 1 << $bit, ($g as usize) << $bit) as $inner);
+    }
+  };
+  // raw ints
+  ($inner:ty, $start:literal - $end:literal : $g:ident, $s:ident) => {
+    #[allow(missing_docs)]
+    #[inline]
+    pub const fn $s(&mut self, $g: $inner) {
+      const MASK: $inner =
+        ((((1_u64 << ($end + 1)) - 1) >> $start) << $start) as $inner;
+      *self = Self(bit_set!(self.0, MASK, $g << $start) as $inner);
+    }
+  };
+  // newtype'd ints
+  ($inner:ty, $start:literal - $end:literal => $nt:ident : $g:ident, $s:ident) => {
+    #[allow(missing_docs)]
+    #[inline]
+    pub const fn $s(&mut self, $g: $nt) {
+      const MASK: $inner =
+        ((((1_u64 << ($end + 1)) - 1) >> $start) << $start) as $inner;
+      *self = Self(bit_set!(self.0, MASK, $g.0) as $inner);
+    }
+  };
+}
+
 macro_rules! bitstruct_newtype {
   ($(#[$ty_attrs:meta])* $name:ident($inner:ty) {
-    $($(#[$field_attrs:meta])* [$($field_tokens:tt)*],)+
-    $(,)*
+    $(
+      $(#[$field_attrs:meta])*
+      [$($field_tokens:tt)*],
+    )+ $(,)?
   }) => {
     $(#[$ty_attrs])*
     #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
     #[repr(transparent)]
     pub struct $name($inner);
     impl $name {
-      $(phantom_field!($(#[$field_attrs])* $inner, $($field_tokens)*);)+
+      $(phantom_field_get!($(#[$field_attrs])* $inner, $($field_tokens)*);)+
+      $(phantom_field_set!(/*no attrs on the setter*/ $inner, $($field_tokens)*);)+
     }
   }
 }
