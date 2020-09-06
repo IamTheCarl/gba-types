@@ -118,7 +118,7 @@ macro_rules! phantom_field_get {
 macro_rules! phantom_field_set {
   // bools
   ($inner:ty, $bit:literal : $g:ident, $s:ident) => {
-    #[allow(missing_docs)]
+    ///
     #[inline]
     pub const fn $s(&mut self, $g: bool) {
       *self =
@@ -127,7 +127,7 @@ macro_rules! phantom_field_set {
   };
   // raw ints
   ($inner:ty, $start:literal - $end:literal : $g:ident, $s:ident) => {
-    #[allow(missing_docs)]
+    ///
     #[inline]
     pub const fn $s(&mut self, $g: $inner) {
       const MASK: $inner =
@@ -137,7 +137,7 @@ macro_rules! phantom_field_set {
   };
   // newtype'd ints
   ($inner:ty, $start:literal - $end:literal => $nt:ident : $g:ident, $s:ident) => {
-    #[allow(missing_docs)]
+    ///
     #[inline]
     pub const fn $s(&mut self, $g: $nt) {
       const MASK: $inner =
@@ -273,14 +273,18 @@ bitstruct_newtype! {
 
 bitstruct_newtype! {
   BackgroundControlSetting(u16) {
-    /// lower priority draws "closer" to the top. in case of tie, go by the bg#
+    /// Lower priority draws "closer" to the top.
+    ///
+    /// In case of tie, you then sort by the BG's layer number:
+    /// ```txt
+    /// bg_z_dist = (bg_priority << 2) + bg_num;
+    /// ```
     [0-1: background_priority, set_background_priority],
     [2-3: base_charblock, set_base_charblock],
     [6: use_mosaic, set_use_mosaic],
     [7: is_8bpp, set_is_8bpp],
     [8-12: base_screenblock, set_base_screenblock],
     [13: affine_overflow_wraparound, set_affine_overflow_wraparound],
-    // TODO: screen_size should be an enum
     [14-15: screen_size, set_screen_size],
   }
 }
