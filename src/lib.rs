@@ -665,6 +665,7 @@ bitstruct_newtype! {
 }
 
 const_enum! {
+  /// Valid wait cycle settings for the SRAM of the game pak.
   SramWaitControlCycles(u16) {
     _4(0),
     _3(1),
@@ -674,6 +675,7 @@ const_enum! {
 }
 
 const_enum! {
+  /// Valid wait cycle settings for wait state 0.
   Rom0WaitControlCycles(u16) {
     _4(0 << 2),
     _3(1 << 2),
@@ -683,6 +685,7 @@ const_enum! {
 }
 
 const_enum! {
+  /// Valid wait cycle settings for wait state 1.
   Rom1WaitControlCycles(u16) {
     _4(0 << 5),
     _3(1 << 5),
@@ -692,6 +695,7 @@ const_enum! {
 }
 
 const_enum! {
+  /// Valid wait cycle settings for wait state 2.
   Rom2WaitControlCycles(u16) {
     _4(0 << 8),
     _3(1 << 8),
@@ -701,6 +705,7 @@ const_enum! {
 }
 
 const_enum! {
+  /// Valid settings for the phy terminal output speed.
   PhiTerminalOutput(u16) {
     Disabled(0 << 11),
     _4_19MHz(1 << 11),
@@ -710,15 +715,29 @@ const_enum! {
 }
 
 bitstruct_newtype! {
+  /// Waitstate control register value
+  /// 
+  /// This controls the access timing to the addresses 0x08000000, 0x0A000000, and 0x0C000000.
+  /// Address 0x08000000 is known as wait state 0, 0x0A000000 as wait state 1, and 0x0C000000 as wait state 2.
+  /// All of these addresses mirror content of the game pak ROM.
   WaitControlSetting(u16) {
+    /// SRAM wait control
     [0-1 => SramWaitControlCycles: sram_wait, set_sram_wait],
+    /// Wait State 0 First Access
     [2-3 => Rom0WaitControlCycles: wait0_first_access, set_wait0_first_access],
+    /// Wait State 0 Second Access
     [4: wait0_second_access_1cycle, set_wait0_second_access_1cycle],
+    /// Wait State 1 First Access
     [5-6 => Rom1WaitControlCycles: wait1_first_access, set_wait1_first_access],
+    /// Wait State 1 Second Access
     [7: wait1_second_access_1cycle, set_wait1_second_access_1cycle],
+    /// Wait State 2 First Access
     [8-9 => Rom2WaitControlCycles: wait2_first_access, set_wait2_first_access],
+    /// Wait State 2 Second Access
     [10: wait2_second_access_1cycle, set_wait2_second_access_1cycle],
+    /// PHI Terminal Output speed
     [11-12 => PhiTerminalOutput: phi_terminal, set_phi_terminal],
+    /// Game Pak Prefetch Buffer enable
     [14: game_pak_prefetch_enabled, set_game_pak_prefetch_enabled],
   }
 }
