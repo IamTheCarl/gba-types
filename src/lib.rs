@@ -614,44 +614,77 @@ bitstruct_newtype! {
 }
 
 bitstruct_newtype! {
+  /// Indicates which buttons are pressed. A button with a value of 0 is pressed, and a value of 1 is released.
+  /// It is recommended that you check these during vblank interrupts. It's an effective way to filter out bounce.
   KeyInputLowActive(u16) {
+    // A button.
     [0: a_released, set_a_released],
+    // B button.
     [1: b_released, set_b_released],
+    // Select button.
     [2: select_released, set_select_released],
+    // Start button.
     [3: start_released, set_start_released],
+    // Right direction button.
     [4: right_released, set_right_released],
+    // Left direction button.
     [5: left_released, set_left_released],
+    // Up direction button.
     [6: up_released, set_up_released],
+    // Down direction button.
     [7: down_released, set_down_released],
+    // Right bumper.
     [8: r_released, set_r_released],
+    // Left bumper.
     [9: l_released, set_l_released],
   }
 }
 
 bitstruct_newtype! {
+  /// Is used for handling keypad interrupts. This is not a good way to handle key input while a game is running. It is recommended you use
+  /// simple polling from within the VBlank interrupt handler to do that.
+  /// 
+  /// The intention of this interrupt is to wake the GBA from very low power stop mode.
+  /// 
+  /// Setting a feild to 1 will enable that key to trigger the interrupt.
   KeyInterruptBits(u16) {
+    /// Enable the A button.
     [0: a_selected, set_a_selected],
+    /// Enable the B button.
     [1: b_selected, set_b_selected],
+    /// Enable the select button.
     [2: select_selected, set_select_selected],
+    /// Enable the start button.
     [3: start_selected, set_start_selected],
+    /// Enable the right directional pad button.
     [4: right_selected, set_right_selected],
+    /// Enable the left directional pad button.
     [5: left_selected, set_left_selected],
+    /// Enable the up directional pad button.
     [6: up_selected, set_up_selected],
+    /// Enable the down directional pad button.
     [7: down_selected, set_down_selected],
+    /// Enable the right bumper button.
     [8: r_selected, set_r_selected],
+    /// Enable the left bumper button.
     [9: l_selected, set_l_selected],
+    /// Enable key interrupts.
     [14: key_interrupts_enabled, set_key_interrupts_enabled],
+    /// When set to 1, all enbabled buttons must be pressed to trigger the interrupt.
+    /// When set to 0, pressing any enabled button will trigger the interrupt.
     [15: interrupt_requires_all_bits, set_interrupt_requires_all_bits],
   }
 }
 
 bitstruct_newtype! {
-/// A bag of bits for working with interrupts. Used in more than one register.
-///
-/// * When used with `IE`, the set bits determine the interrupts that will be accepted. Each interrupt source must be separately configured to also send the appropriate interrupt via other registers.
-/// * When used with `IF`:
-///   * Read the register to see what interrupts are currently pending.
-///   * Write the register with active bits to clear a pending interrupt. It's slightly confusing that you write a 1-bit to change a 1-bit to a 0-bit, but that's really how it works.
+  /// A bag of bits for working with interrupts. Used in more than one register.
+  ///
+  /// * When used with `IE`, the set bits determine the interrupts that will be accepted. Each interrupt source must be separately configured
+  ///   to also send the appropriate interrupt via other registers.
+  /// * When used with `IF`:
+  ///   * Read the register to see what interrupts are currently pending.
+  ///   * Write the register with active bits to clear a pending interrupt. It's slightly confusing that you write a 1-bit to change a
+  ///     1-bit to a 0-bit, but that's really how it works.
   InterruptFlagBits(u16) {
     /// Vertical Blank Interrupt.
     [0: vblank, set_vblank],
