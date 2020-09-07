@@ -16,9 +16,9 @@
 //! DMA3 is special because it is capable of writing to game pak ROM/FlashROM,
 //! but is unable to write to game pak SRAM.
 //!
-//! The DMA channels do not need to be used for these exact purposes, you can
+//! The DMA channels do not need to be used for these exact purposes. You can
 //! generally do whatever you want with them as long as it falls within their
-//! address constraints.
+//! address and start condition constraints.
 
 const_enum! {
   /// Destination control settings.
