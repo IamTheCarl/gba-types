@@ -1,13 +1,13 @@
 //! DMA on the GBA is very different from most embedded devices. It does not run
 //! in parallel to the CPU, but rather stops the CPU to preform the memory
-//! transfer. Dispite the fact that it stops the CPU, it is still generally
+//! transfer. Despite the fact that it stops the CPU, it is still generally
 //! faster than having the CPU copy data by itself.
 //!
 //! There are 4 DMA channels, DMA0, DMA1, DMA2, and DMA3.
 //!
 //! DMA0 is the highest priority channel and will always complete its job before
 //! any other channel. This is ideal for time critical operations, such as
-//! copying data to a horizontal scanline. It has the restriction of only being
+//! copying data to a horizontal scan line. It has the restriction of only being
 //! able to access internal memory, so it cannot access the game pak.
 //!
 //! DMA1 and DMA2 are intended to be used for feeding sound data into the audio
@@ -19,6 +19,11 @@
 //! The DMA channels do not need to be used for these exact purposes. You can
 //! generally do whatever you want with them as long as it falls within their
 //! address and start condition constraints.
+//!  * DMA0: Can only access internal memory, consisting of EWRAM, IWRAM, and VRAM.
+//!  * DMA1/2: Has the same access as DMA0 except it can also read from game pak ROM.
+//!  * DMA3: Has the same access as DMA1/2 but it can write to game pak ROM/FlashROM.
+//!          Do note that it cannot write to game pak SRAM. This must always be done
+//!          by the processor.
 
 const_enum! {
   /// Destination control settings.
