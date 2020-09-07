@@ -597,7 +597,7 @@ mod dma {
       Decrement(1 << 5),
       /// Do not move.
       Fixed(2 << 5),
-      /// TODO working on figuring out what makes this special.
+      /// Reloads the original value after the DMA completes.
       IncrementReload(3 << 5),
     }
   }
