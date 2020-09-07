@@ -554,19 +554,29 @@ bitstruct_newtype! {
 }
 
 const_enum! {
+  /// A scale factor that sets the base frequency of the timer.
   TimerScaleFactor(u8) {
+    /// 16.78MHz, 59.59 ns period.
     _1(0),
+    /// 262.21kHz, 3.815 μs period.
     _64(1),
+    /// 65.536kHz, 15.26 μs period.
     _256(2),
+    /// 16.384kHz, 61.04 μs period.
     _1024(3),
   }
 }
 
 bitstruct_newtype! {
   TimerControlSetting(u8) {
+    /// The prescale scale factor that the timer will count at.
     [0-1 => TimerScaleFactor: scale_factor, set_scale_factor],
+    /// Instead of incrementing the count with each prescaled clock cycle, will instead increment whenever the lower number timer overflows.
+    /// Timer0 cannot make effective use of this feature because there is no lower number timer than it.
     [2: overflow_counting, set_overflow_counting],
+    /// Set to 1 to generate an interrupt when this timer overflows.
     [6: interrupt_on_overflow, set_interrupt_on_overflow],
+    /// Set to 1 to enable the timer. Will clear the timer when enabled.
     [7: enabled, set_enabled],
   }
 }
