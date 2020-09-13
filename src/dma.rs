@@ -19,11 +19,13 @@
 //! The DMA channels do not need to be used for these exact purposes. You can
 //! generally do whatever you want with them as long as it falls within their
 //! address and start condition constraints.
-//!  * DMA0: Can only access internal memory, consisting of EWRAM, IWRAM, and VRAM.
-//!  * DMA1/2: Has the same access as DMA0 except it can also read from game pak ROM.
-//!  * DMA3: Has the same access as DMA1/2 but it can write to game pak ROM/FlashROM.
-//!          Do note that it cannot write to game pak SRAM. This must always be done
-//!          by the processor.
+//!  * DMA0: Can only access internal memory, consisting of EWRAM, IWRAM, and
+//!    VRAM.
+//!  * DMA1/2: Has the same access as DMA0 except it can also read from game pak
+//!    ROM.
+//!  * DMA3: Has the same access as DMA1/2 but it can write to game pak
+//!    ROM/FlashROM. Do note that it cannot write to game pak SRAM. This must
+//!    always be done by the processor.
 
 const_enum! {
   /// Destination control settings.

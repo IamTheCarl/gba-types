@@ -389,173 +389,11 @@ bitstruct_newtype! {
   }
 }
 
-bitstruct_newtype! {
-  ToneSweep(u8) {
-    [0-2: sweep_shift_count, set_sweep_shift_count],
-    [3: decreasing_sweep, set_decreasing_sweep],
-    [4-6: sweep_time_chunk, set_sweep_time_chunk],
-  }
-}
+pub mod sound;
 
-const_enum! {
-  ToneWavePatternDuty(u16) {
-    _12_5(0 << 6),
-    _25(1 << 6),
-    _50(2 << 6),
-    _75(3 << 6),
-  }
-}
+pub mod timer;
 
-bitstruct_newtype! {
-  ToneDutyLenEnvelope(u16) {
-    [0-5: sound_length, set_sound_length],
-    [6-7 => ToneWavePatternDuty: decreasing_sweep, set_decreasing_sweep],
-    [8-10: envelope_step_time, set_envelope_step_time],
-    [11: increasing_envelope, set_increasing_envelope],
-    [12-15: initial_volume, set_initial_volume],
-  }
-}
-
-bitstruct_newtype! {
-  ToneFrequencyControl(u16) {
-    [0-10: frequency, set_frequency],
-    [14: stop_at_end, set_stop_at_end],
-    [15: init, set_init],
-  }
-}
-
-bitstruct_newtype! {
-  WaveRamSelect(u8) {
-    [5: two_banks, set_two_banks],
-    [6: using_bank1, set_using_bank1],
-    [7: playing, set_playing],
-  }
-}
-
-const_enum! {
-  WaveVolume(u8) {
-    _0(0 << 5),
-    _100(1 << 5),
-    _50(2 << 5),
-    _25(3 << 5),
-    _75(0b100 << 5),
-  }
-}
-
-bitstruct_newtype! {
-  WaveVolumeSetting(u8) {
-    [5-7 => WaveVolume: volume, set_volume],
-  }
-}
-
-bitstruct_newtype! {
-  WaveFrequencyControl(u16) {
-    [0-10: sample_rate, set_sample_rate],
-    [14: stop_at_end, set_stop_at_end],
-    [15: init, set_init],
-  }
-}
-
-bitstruct_newtype! {
-  NoiseLengthEnvelope(u16) {
-    [0-5: length, set_length],
-    [8-10: envelope_step_time, set_envelope_step_time],
-    [11: increasing_envelope, set_increasing_envelope],
-    [12-15: initial_volume, set_initial_volume],
-  }
-}
-
-bitstruct_newtype! {
-  NoiseFrequencyControl(u16) {
-    /// 0 => 0.5 instead
-    [0-2: dividing_ratio, set_dividing_ratio],
-    [3: step_width_7bits, set_step_width_7bits],
-    [4-7: shift_clock_frequency, set_shift_clock_frequency],
-    [14: stop_at_end, set_stop_at_end],
-    [15: init, set_init],
-  }
-}
-
-bitstruct_newtype! {
-  GeneratedSoundLeftRightMainVolume(u8) {
-    [0-2: right, set_right],
-    [4-6: left, set_left],
-  }
-}
-
-bitstruct_newtype! {
-  GeneratedSoundLeftRightEnabled(u8) {
-    [0: right_sound_1_enabled, set_right_sound_1_enabled],
-    [1: right_sound_2_enabled, set_right_sound_2_enabled],
-    [2: right_sound_3_enabled, set_right_sound_3_enabled],
-    [3: right_sound_4_enabled, set_right_sound_4_enabled],
-    [4: left_sound_1_enabled, set_left_sound_1_enabled],
-    [5: left_sound_2_enabled, set_left_sound_2_enabled],
-    [6: left_sound_3_enabled, set_left_sound_3_enabled],
-    [7: left_sound_4_enabled, set_left_sound_4_enabled],
-  }
-}
-
-const_enum! {
-  GeneratedSoundMixingVolume(u8) {
-    _25(0),
-    _50(1),
-    _100(2),
-  }
-}
-
-bitstruct_newtype! {
-  DmaSoundMixVolumeControl(u8) {
-    [0-1 => GeneratedSoundMixingVolume: generated_volume, set_generated_volume],
-    [2: sound_a_full, set_sound_a_full],
-    [3: sound_b_full, set_sound_b_full],
-  }
-}
-
-bitstruct_newtype! {
-  DmaSoundControlBits(u8) {
-    [0: sound_a_right, set_sound_a_right],
-    [1: sound_a_left, set_sound_a_left],
-    [2: sound_a_timer1, set_sound_a_timer1],
-    [3: sound_a_fifo_reset, set_sound_a_fifo_reset],
-    [4: sound_b_right, set_sound_b_right],
-    [5: sound_b_left, set_sound_b_left],
-    [6: sound_b_timer1, set_sound_b_timer1],
-    [7: sound_b_fifo_reset, set_sound_b_fifo_reset],
-  }
-}
-
-// Note(Lokathor): PSG = Programmable Sound Generator
-
-bitstruct_newtype! {
-  GeneratedSoundActiveBits(u8) {
-    [0: sound_1_active, set_sound_1_active],
-    [1: sound_2_active, set_sound_2_active],
-    [2: sound_3_active, set_sound_3_active],
-    [3: sound_4_active, set_sound_4_active],
-    [7: sound_enabled, set_sound_enabled],
-  }
-}
-
-const_enum! {
-  SoundBiasSamplingSetting(u16) {
-    _9bit(0 << 14),
-    _8bit(1 << 14),
-    _7bit(2 << 14),
-    _6bit(3 << 14),
-  }
-}
-
-bitstruct_newtype! {
-  SoundBiasSetting(u16) {
-    [1-9: bias_level, set_bias_level],
-    [14-15 => SoundBiasSamplingSetting: sampling_cycle, set_sampling_cycle],
-  }
-}
-
-mod timer;
-
-mod dma;
+pub mod dma;
 
 bitstruct_newtype! {
   /// Indicates which buttons are pressed. A button with a value of 0 is pressed, and a value of 1 is released.
@@ -590,7 +428,7 @@ bitstruct_newtype! {
   ///
   /// The intention of this interrupt is to wake the GBA from very low power stop mode.
   ///
-  /// Setting a feild to 1 will enable that key to trigger the interrupt.
+  /// Setting a field to 1 will enable that key to trigger the interrupt.
   KeyInterruptBits(u16) {
     /// Enable the A button.
     [0: a_selected, set_a_selected],
@@ -614,7 +452,7 @@ bitstruct_newtype! {
     [9: l_selected, set_l_selected],
     /// Enable key interrupts.
     [14: key_interrupts_enabled, set_key_interrupts_enabled],
-    /// When set to 1, all enbabled buttons must be pressed to trigger the
+    /// When set to 1, all enabled buttons must be pressed to trigger the
     /// interrupt.
     /// When set to 0, pressing any enabled button will trigger the interrupt.
     [15: interrupt_requires_all_bits, set_interrupt_requires_all_bits],
@@ -717,7 +555,7 @@ const_enum! {
 }
 
 bitstruct_newtype! {
-  /// Waitstate control register value
+  /// Wait state control register value
   ///
   /// This controls the access timing to the addresses 0x08000000, 0x0A000000,
   /// and 0x0C000000. Address 0x08000000 is known as wait state 0, 0x0A000000
